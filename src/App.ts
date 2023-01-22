@@ -1,6 +1,6 @@
 import CarsPage from './pages/CarsPage';
 import MainPageView from './pages/MainPageView';
-import {selectCar, updateCar} from './main/actions'
+import {selectCar, updateCar, createCar, deleteCar} from './main/actions'
 
 export default class App {
   static container: HTMLElement;
@@ -44,6 +44,20 @@ export default class App {
       if ((event.target as HTMLElement).classList.contains('update')) {
         document.querySelector('.container')
         updateCar(App.indexOfCar)
+      }
+      if ((event.target as HTMLElement).classList.contains('create-btn')) {
+        const nameCar = (document.querySelector('#create') as HTMLInputElement).value;
+        console.log(nameCar);
+
+        const chooseColor = (document.querySelector('#createColor') as HTMLInputElement).value;
+        await createCar({
+          name: nameCar,
+          color: chooseColor,
+        });
+      }
+      if ((event.target as HTMLElement).classList.contains('delete')) {
+        const indexOfCar = Number((event.target as HTMLElement).classList[0].slice(6));
+        deleteCar(indexOfCar);
       }
 
     })

@@ -26,3 +26,23 @@ export  async function updateCar(id:number) {
   App.renderNewPage('garage')
   return;
 }
+
+export async function createCar (body: object) {
+  const resp = await fetch(`http://127.0.0.1:3000/garage`, {
+        method: 'POST',
+        headers: {
+              'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+  })
+  App.renderNewPage('garage')
+  return;
+}
+
+export async function deleteCar (id:number) {
+  const resp = await fetch(`http://127.0.0.1:3000/garage/${id}`, {
+        method: 'DELETE',
+  })
+  App.renderNewPage('garage')
+  return;
+}

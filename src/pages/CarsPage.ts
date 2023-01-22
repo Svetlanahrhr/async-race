@@ -13,8 +13,10 @@ export default class CarsPage {
   async render(){
     const wrapper = new CreateElement('div', '', 'wrapper').getElement();
 
-    const inputCreate = new CreateElement('input', '', 'input-color').getElement()
+    const inputCreate = new CreateElement('input', '', ['input-color','create']).getElement()
+    inputCreate.id = 'create'
     const inputColorCreate = new CreateElement('input', '', 'input-color').getElement() as HTMLInputElement;
+    inputColorCreate.id = 'createColor'
     const inputUpdate = new CreateElement('input', '', 'input-color').getElement()
     const inputColorUpdate = new CreateElement('input', '', 'update-color').getElement() as HTMLInputElement;
     inputUpdate.id = 'update'
