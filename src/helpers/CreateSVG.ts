@@ -1,5 +1,5 @@
 export default class CreateSVG {
-    getSVG(color, id) {
+    getSVG(color:string, id:number) {
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.classList.add('icon');
         svg.classList.add('icon' + id);

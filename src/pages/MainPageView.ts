@@ -1,13 +1,18 @@
 import CreateElement from '../helpers/CreateElement';
+
 export default class MainPageView {
   static container: HTMLElement = document.querySelector('body') as HTMLElement;
-    static btnCars = new CreateElement('a', 'To garage', 'btn').getElement() as HTMLLinkElement;
-    static btnGarage = new CreateElement('a', 'To winners', 'btn').getElement();
-    static header = new CreateElement('h1', 'Async Race', 'btn').getElement();
+    static btnCars: HTMLLinkElement = new CreateElement('a', 'To garage', 'btn').getElement() as HTMLLinkElement;
+    static btnWinners: HTMLLinkElement = new CreateElement('a', 'To winners', 'btn').getElement() as HTMLLinkElement;
+    static header = new CreateElement('h1', 'Async Race', 'header').getElement();
+    static containerOfCars = new CreateElement('div', '', 'container').getElement() as HTMLElement;
 
-    render() {
+    async render() {
       MainPageView.container.append(MainPageView.header)
+      MainPageView.btnCars.href = '#garage';
+      MainPageView.btnWinners.href = '#winners';
       MainPageView.container.append(MainPageView.btnCars)
-      MainPageView.container.append(MainPageView.btnGarage)
+      MainPageView.container.append(MainPageView.btnWinners)
+      MainPageView.container.append(MainPageView.containerOfCars)
     }
 }

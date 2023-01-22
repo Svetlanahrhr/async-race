@@ -1,5 +1,5 @@
 export default class CreateElement {
-    constructor(public tagName: string, public text = '', public className: string ) {
+    constructor(public tagName: string, public text = '', public className: string| string[] ) {
         this.tagName = tagName;
         this.text = text ? text : '';
         this.className = className
@@ -8,8 +8,11 @@ export default class CreateElement {
 
     getElement() {
         const element = document.createElement(`${this.tagName}`);
-        element.classList.add(this.className)
-        // this.className.forEach((n) => element.classList.add(n));
+        if (typeof this.className === 'string') {
+          element.classList.add(this.className)
+        } else {
+        this.className.forEach((n) => element.classList.add(n));
+        }
         element.innerHTML = this.text;
         return element;
     }
