@@ -1,6 +1,11 @@
 import CarsPage from './pages/CarsPage';
 import MainPageView from './pages/MainPageView';
-import {selectCar, updateCar, createCar, deleteCar} from './main/actions'
+import {selectCar, updateCar, createCar, deleteCar, startEngine, stopEngine, driveCar, animateSVG} from './main/actions'
+
+interface IResult {
+  success?: boolean;
+}
+let test:number;
 
 export default class App {
   static container: HTMLElement;
@@ -33,19 +38,20 @@ export default class App {
   }
   private eventsListener() {
     document.body.addEventListener('click', async (event) => {
+      let target = event.target as HTMLElement;
       console.log(event.target);
 
-      if ((event.target as HTMLElement).classList.contains('select')) {
-        App.indexOfCar = Number((event.target as HTMLElement).classList[0].slice(6))
-        console.log((event.target as HTMLElement).classList[0].slice(6));
+      if (target.classList.contains('select')) {
+        App.indexOfCar = Number(target.classList[0].slice(6))
+        console.log(target.classList[0].slice(6));
         (document.querySelector('.update') as HTMLButtonElement).disabled = false;
         selectCar(App.indexOfCar)
       }
-      if ((event.target as HTMLElement).classList.contains('update')) {
+      if (target.classList.contains('update')) {
         document.querySelector('.container')
         updateCar(App.indexOfCar)
       }
-      if ((event.target as HTMLElement).classList.contains('create-btn')) {
+      if (target.classList.contains('create-btn')) {
         const nameCar = (document.querySelector('#create') as HTMLInputElement).value;
         console.log(nameCar);
 
@@ -55,11 +61,67 @@ export default class App {
           color: chooseColor,
         });
       }
-      if ((event.target as HTMLElement).classList.contains('delete')) {
+      if (target.classList.contains('delete')) {
         const indexOfCar = Number((event.target as HTMLElement).classList[0].slice(6));
         deleteCar(indexOfCar);
+      }
+      if (target.classList.contains('start')) {
+        const indexOfCar = Number(target.classList[0].slice(5));
+        let duration = startEngine(indexOfCar);
+        console.log(await duration);
+        let result: IResult = await driveCar(await duration,indexOfCar);
+        let road = document.querySelector('.road') as HTMLDivElement;
+        let svg = document.querySelector('.icon') as HTMLElement;
+
+        test = moveCar(svg,road.getBoundingClientRect().width, await duration)
+        // let test = animateSVG(svg, await duration);
+
+
+        if(!result.success){
+          stopEngine(indexOfCar);
+          clearInterval(test)
+        }
+
+
+      }
+      if (target.classList.contains('stop')) {
+        const indexOfCar = Number(target.classList[0].slice(4));
+        stopEngine(indexOfCar);
+        clearInterval(test);
       }
 
     })
   }
 }
+
+function animateElement(element: HTMLElement, animationType:string, duration:number) {
+  element.style.animation = `${animationType} ${duration}s`;
+  }
+
+  function moveCar(svg: HTMLElement,endX:number, duration:number) {
+    let currentX:number;
+    let timer = setTimeout(() => {
+    currentX = svg.getBoundingClientRect().left
+    }, duration);
+    console.log('currentX', currentX);
+    const framesCount = (duration / 1000) * 60;
+    const dX = (endX - svg.getBoundingClientRect().left) / framesCount;
+    let test:number;
+    const tick = () => {
+      currentX += dX;
+
+      svg.style.transform = `translateX(${currentX}px)`;
+
+      if (currentX < endX) {
+        test = requestAnimationFrame(tick);
+      }
+    //   document.querySelector(`.stop${this.indexOfCar}`).addEventListener('click', async () => {
+    //     this.stopCar();
+    //     svg.style.transform = `translateX(${0}px)`;
+    //     cancelAnimationFrame(test);
+    //     clearTimeout(timer);
+    //   });
+    };
+    tick();
+    return test;
+  }
