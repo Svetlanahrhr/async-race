@@ -15,7 +15,7 @@
   margin-top: 50px;
 }
 .icon{
-  width: 100%;
+  width: 100px;
   height: 50px;
 }
 .road {
@@ -23,4 +23,9 @@
 }
 .btn-action{
 margin: 10px;
+}
+.container{
+  max-height: 1200px;
+  margin: 0 auto;
+  padding: 0 10px;
 }

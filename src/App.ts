@@ -70,24 +70,36 @@ export default class App {
         let duration = startEngine(indexOfCar);
         console.log(await duration);
         let result: IResult = await driveCar(await duration,indexOfCar);
-        let road = document.querySelector('.road') as HTMLDivElement;
-        let svg = document.querySelector('.icon') as HTMLElement;
+        // let road = document.querySelector('.road') as HTMLDivElement;
+        let svg = document.querySelector(`.icon${indexOfCar}`) as HTMLElement;
+        console.log(svg.getBoundingClientRect().left);
 
-        test = moveCar(svg,road.getBoundingClientRect().width, await duration)
+
+        test = moveCar(svg, await duration, indexOfCar);
+        console.log(test);
+
         // let test = animateSVG(svg, await duration);
 
 
         if(!result.success){
           stopEngine(indexOfCar);
-          clearInterval(test)
+          cancelAnimationFrame(test);
+          clearInterval(test);
+          svg.style.transform = `translateX(${0}px)`;
         }
 
 
       }
       if (target.classList.contains('stop')) {
         const indexOfCar = Number(target.classList[0].slice(4));
+        let svg = document.querySelector(`.icon${indexOfCar}`) as HTMLElement;
+        cancelAnimationFrame(test);
+
+
         stopEngine(indexOfCar);
-        clearInterval(test);
+        svg.style.transform = `translateX(${0}px)`;
+        // clearInterval(test);
+
       }
 
     })
@@ -98,12 +110,16 @@ function animateElement(element: HTMLElement, animationType:string, duration:num
   element.style.animation = `${animationType} ${duration}s`;
   }
 
-  function moveCar(svg: HTMLElement,endX:number, duration:number) {
+  function moveCar(svg: HTMLElement, duration:number,indexOfCar:number) {
+    let road = document.querySelector('.road') as HTMLDivElement;
+    let endX =road.getBoundingClientRect().width;
     let currentX:number;
-    let timer = setTimeout(() => {
-    currentX = svg.getBoundingClientRect().left
-    }, duration);
-    console.log('currentX', currentX);
+    // let timer = setTimeout(() => {
+    // currentX = svg.getBoundingClientRect().left;
+    // console.log('currentX', currentX);
+    // }, duration);
+    // console.log('currentX', currentX);
+    currentX = svg.getBoundingClientRect().left;
     const framesCount = (duration / 1000) * 60;
     const dX = (endX - svg.getBoundingClientRect().left) / framesCount;
     let test:number;
@@ -112,15 +128,15 @@ function animateElement(element: HTMLElement, animationType:string, duration:num
 
       svg.style.transform = `translateX(${currentX}px)`;
 
-      if (currentX < endX) {
+      if (currentX+100 < endX) {
         test = requestAnimationFrame(tick);
       }
-    //   document.querySelector(`.stop${this.indexOfCar}`).addEventListener('click', async () => {
-    //     this.stopCar();
-    //     svg.style.transform = `translateX(${0}px)`;
-    //     cancelAnimationFrame(test);
-    //     clearTimeout(timer);
-    //   });
+      document.querySelector(`.stop${indexOfCar}`).addEventListener('click', async () => {
+        // this.stopCar();
+        svg.style.transform = `translateX(${0}px)`;
+        cancelAnimationFrame(test);
+        // clearTimeout(timer);
+      });
     };
     tick();
     return test;
