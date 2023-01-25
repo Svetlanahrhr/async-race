@@ -127,7 +127,7 @@ function showWinner(winner: IWinner) {
     } else {
         popup = new CreateElement(
             'div',
-            `Winner is №${winner.id} duration is ${winner.duration}`,
+            `Winner is car №${winner.id} with time: ${winner.duration}s`,
             'popup'
         ).getElement();
         document.querySelector('.container').append(popup);
