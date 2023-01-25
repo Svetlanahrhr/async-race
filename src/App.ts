@@ -48,7 +48,7 @@ export default class App {
         selectCar(App.indexOfCar)
       }
       if (target.classList.contains('update')) {
-        document.querySelector('.container')
+        // document.querySelector('.container')
         updateCar(App.indexOfCar)
       }
       if (target.classList.contains('create-btn')) {
@@ -99,6 +99,34 @@ export default class App {
         stopEngine(indexOfCar);
         svg.style.transform = `translateX(${0}px)`;
         // clearInterval(test);
+
+      }
+
+      if (target.classList.contains('start-race')) {
+        const cars = document.querySelectorAll('.icon');
+
+        cars.forEach(async (car) => {
+          let indexOfCar= Number(car.classList[0].slice(4))
+          let duration = startEngine(indexOfCar);
+
+
+
+        let result: IResult = await driveCar(await duration,indexOfCar);
+        // let road = document.querySelector('.road') as HTMLDivElement;
+        let svg = document.querySelector(`.icon${indexOfCar}`) as HTMLElement;
+        console.log(svg.getBoundingClientRect().left);
+
+
+        test = moveCar(svg, await duration, indexOfCar);
+
+        if(!result.success){
+          stopEngine(indexOfCar);
+          cancelAnimationFrame(test);
+          clearInterval(test);
+          svg.style.transform = `translateX(${0}px)`;
+        }
+        })
+        // Promise.all()
 
       }
 

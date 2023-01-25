@@ -25,7 +25,10 @@ export default class CarsPage {
     const createBtn = new CreateElement('button', 'create', ['btn','create-btn']).getElement();
     const updateBtn = new CreateElement('button', 'update', ['update','btn','update-btn',]).getElement() as HTMLInputElement;
     updateBtn.disabled = true;
-    const br = new CreateElement('br', '', 'br').getElement()
+    const br = new CreateElement('br', '', 'br').getElement();
+
+    const startRaceBtn = new CreateElement('button', 'Start Race', ['start-race',]).getElement() as HTMLButtonElement;
+
 
 
     wrapper.append(inputCreate)
@@ -35,6 +38,7 @@ export default class CarsPage {
     wrapper.append(inputUpdate)
     wrapper.append(inputColorUpdate)
     wrapper.append(updateBtn)
+    wrapper.append(startRaceBtn)
 
     const {counCars} = await new Cars(wrapper).getCars(this.pageNumber);
 
