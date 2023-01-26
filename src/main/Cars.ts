@@ -1,6 +1,5 @@
 import CreateElement from '../helpers/CreateElement';
 import CreateSVG from '../helpers/CreateSVG';
-import Model from '../model';
 
 interface ICar {
     color: string;
@@ -50,9 +49,3 @@ export default class Cars {
     }
 }
 
-// function animateSVG(element, duration, from, to) {
-//   element.animate([{ transform: from }, { transform: to }], {
-//   duration: duration,
-//   iterations: 1
-//   });
-//   }

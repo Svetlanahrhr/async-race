@@ -1,4 +1,5 @@
 import CarsPage from './pages/CarsPage';
+import WinnersPage from './pages/WinnersPage';
 import MainPageView from './pages/MainPageView';
 import {
     selectCar,
@@ -17,17 +18,20 @@ interface IResult {
 let test: number;
 
 export default class App {
-    static container: HTMLElement;
+    static containerOfGarage: HTMLElement;
+    static containerOfWinners: HTMLElement;
     static indexOfCar: number;
 
     static async renderNewPage(hash: string) {
         if (hash === 'garage') {
-            App.container.innerHTML = '';
-            App.container.append(await new CarsPage().render());
+          App.containerOfGarage.classList.remove('hide');
+          App.containerOfWinners.classList.add('hide');
         } else if (hash === 'winners') {
-            App.container.innerHTML = 'winners page';
+            App.containerOfGarage.classList.add('hide');
+            App.containerOfWinners.classList.remove('hide');
         } else {
-            App.container.innerHTML = 'Page not found';
+          App.containerOfGarage.classList.add('hide');
+          App.containerOfWinners.classList.add('hide');
         }
     }
 
@@ -40,8 +44,12 @@ export default class App {
     async run() {
         new MainPageView().render();
         const cars = new CarsPage().render();
-        App.container = document.querySelector('.container');
-        App.container.append(await cars);
+        const winners = new WinnersPage().render();
+        App.containerOfGarage = document.querySelector('.containerOfGarage');
+        App.containerOfWinners = document.querySelector('.containerOfWinners');
+        App.containerOfWinners.append(await winners);
+        App.containerOfGarage.append(await cars);
+        window.location.hash = 'garage'
         this.routeChange();
         this.eventsListener();
     }
@@ -57,7 +65,7 @@ export default class App {
                 selectCar(App.indexOfCar);
             }
             if (target.classList.contains('update')) {
-                // document.querySelector('.container')
+                // document.querySelector('.containerOfGarage')
                 updateCar(App.indexOfCar);
             }
             if (target.classList.contains('create-btn')) {

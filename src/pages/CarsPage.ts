@@ -1,11 +1,11 @@
 import Cars from '../main/Cars';
 import CreateElement from '../helpers/CreateElement';
-import Model from '../model';
-interface ICar {
-  color: string;
-  id: number;
-  name: string;
-}
+
+// interface ICar {
+//   color: string;
+//   id: number;
+//   name: string;
+// }
 
 export default class CarsPage {
   private pageNumber: number = 1;

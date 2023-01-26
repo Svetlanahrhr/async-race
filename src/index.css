@@ -54,3 +54,12 @@
    -webkit-animation: pulsate 1.2s linear infinite;
    animation: pulsate 1.2s linear infinite;
  }
+ .container.hide{
+  display: none;
+ }
+ button:disabled{
+  color: cadetblue;
+ }
+ button:disabled:hover{
+  color: cadetblue;
+ }

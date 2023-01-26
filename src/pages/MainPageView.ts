@@ -5,7 +5,8 @@ export default class MainPageView {
     static btnCars: HTMLLinkElement = new CreateElement('a', 'To garage', 'btn').getElement() as HTMLLinkElement;
     static btnWinners: HTMLLinkElement = new CreateElement('a', 'To winners', 'btn').getElement() as HTMLLinkElement;
     static header = new CreateElement('h1', 'Async Race', 'header').getElement();
-    static containerOfCars = new CreateElement('div', '', 'container').getElement() as HTMLElement;
+    static containerOfCars = new CreateElement('div', '', ['container','containerOfGarage']).getElement() as HTMLElement;
+    static containerOfWinners = new CreateElement('div', '', ['container','containerOfWinners']).getElement() as HTMLElement;
 
     async render() {
       MainPageView.container.append(MainPageView.header)
@@ -14,5 +15,6 @@ export default class MainPageView {
       MainPageView.container.append(MainPageView.btnCars)
       MainPageView.container.append(MainPageView.btnWinners)
       MainPageView.container.append(MainPageView.containerOfCars)
+      MainPageView.container.append(MainPageView.containerOfWinners)
     }
 }

@@ -8,7 +8,7 @@ let winner: IWinner = {
     time: 0,
 };
 
-interface IWinner {
+export interface IWinner {
   id?: number,
   wins?: number,
   time?: number
@@ -197,4 +197,3 @@ export async function getWinners() {
 }
 
 getWinners()
-getWinner(1)
