@@ -1,37 +1,30 @@
 import CarsPage from './pages/CarsPage';
 import WinnersPage from './pages/WinnersPage';
 import MainPageView from './pages/MainPageView';
-import {
-    selectCar,
-    updateCar,
-    createCar,
-    deleteCar,
-    startEngine,
-    stopEngine,
-    driveCar,
-    moveCar,
-} from './main/actions';
+import { selectCar, updateCar, createCar, deleteCar, startEngine, stopEngine, driveCar, moveCar } from './main/actions';
 
-interface IResult {
-    success?: boolean;
-}
 let test: number;
 
 export default class App {
     static containerOfGarage: HTMLElement;
     static containerOfWinners: HTMLElement;
     static indexOfCar: number;
+    static app: App;
 
     static async renderNewPage(hash: string) {
         if (hash === 'garage') {
-          App.containerOfGarage.classList.remove('hide');
-          App.containerOfWinners.classList.add('hide');
+            App.containerOfGarage.classList.remove('hide');
+            App.containerOfWinners.classList.add('hide');
+            App.containerOfGarage.innerHTML = '';
+            App.containerOfGarage.append(await new CarsPage().render());
         } else if (hash === 'winners') {
             App.containerOfGarage.classList.add('hide');
             App.containerOfWinners.classList.remove('hide');
+            App.containerOfWinners.innerHTML = '';
+            App.containerOfWinners.append(await new WinnersPage().render());
         } else {
-          App.containerOfGarage.classList.add('hide');
-          App.containerOfWinners.classList.add('hide');
+            App.containerOfGarage.classList.add('hide');
+            App.containerOfWinners.classList.add('hide');
         }
     }
 
@@ -47,9 +40,10 @@ export default class App {
         const winners = new WinnersPage().render();
         App.containerOfGarage = document.querySelector('.containerOfGarage');
         App.containerOfWinners = document.querySelector('.containerOfWinners');
+        App.containerOfWinners.classList.add('hide');
         App.containerOfWinners.append(await winners);
         App.containerOfGarage.append(await cars);
-        window.location.hash = 'garage'
+        window.location.hash = 'garage';
         this.routeChange();
         this.eventsListener();
     }
@@ -65,8 +59,8 @@ export default class App {
                 selectCar(App.indexOfCar);
             }
             if (target.classList.contains('update')) {
-                // document.querySelector('.containerOfGarage')
-                updateCar(App.indexOfCar);
+                await updateCar(App.indexOfCar);
+                App.renderNewPage('garage');
             }
             if (target.classList.contains('create-btn')) {
                 const nameCar = (document.querySelector('#create') as HTMLInputElement).value;
@@ -77,10 +71,13 @@ export default class App {
                     name: nameCar,
                     color: chooseColor,
                 });
+
+                App.renderNewPage('garage');
             }
             if (target.classList.contains('delete')) {
                 const indexOfCar = Number((event.target as HTMLElement).classList[0].slice(6));
                 deleteCar(indexOfCar);
+                App.renderNewPage('garage');
             }
             if (target.classList.contains('start')) {
                 const indexOfCar = Number(target.classList[0].slice(5));
@@ -90,16 +87,16 @@ export default class App {
                 await driveCar(indexOfCar);
             }
             if (target.classList.contains('stop')) {
-              const indexOfCar = Number(target.classList[0].slice(4));
-              let svg = document.querySelector(`.icon${indexOfCar}`) as HTMLElement;
-              cancelAnimationFrame(test);
-              stopEngine(indexOfCar);
-              svg.style.transform = `translateX(${0}px)`;
+                const indexOfCar = Number(target.classList[0].slice(4));
+                let svg = document.querySelector(`.icon${indexOfCar}`) as HTMLElement;
+                cancelAnimationFrame(test);
+                stopEngine(indexOfCar);
+                svg.style.transform = `translateX(${0}px)`;
             }
             if (document.querySelector('.popup')) {
-              if (!target.classList.contains('popup')) {
-                document.querySelector('.popup').classList.add('hide');
-              }
+                if (!target.classList.contains('popup')) {
+                    document.querySelector('.popup').classList.add('hide');
+                }
             }
             if (target.classList.contains('start-race')) {
                 const cars = document.querySelectorAll('.icon');
@@ -112,9 +109,7 @@ export default class App {
                     test = moveCar(svg, duration, indexOfCar);
                     driveCar(indexOfCar);
                 });
-
             }
         });
     }
 }
-

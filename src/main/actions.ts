@@ -1,4 +1,3 @@
-import App from '../App';
 import CreateElement from '../helpers/CreateElement';
 let test: number;
 let popup: HTMLElement;
@@ -35,7 +34,6 @@ export async function updateCar(id: number) {
         }),
     });
     await resp.json();
-    App.renderNewPage('garage');
     return;
 }
 
@@ -47,7 +45,6 @@ export async function createCar(body: object) {
         },
         body: JSON.stringify(body),
     });
-    App.renderNewPage('garage');
     return;
 }
 
@@ -55,7 +52,6 @@ export async function deleteCar(id: number) {
     const resp = await fetch(`http://127.0.0.1:3000/garage/${id}`, {
         method: 'DELETE',
     });
-    App.renderNewPage('garage');
     return;
 }
 
