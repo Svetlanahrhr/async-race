@@ -4,12 +4,14 @@ let test: number;
 let popup: HTMLElement;
 let winner: IWinner = {
     id: 0,
-    duration: 0,
+    wins: 0,
+    time: 0,
 };
 
 interface IWinner {
-    id?: number;
-    duration?: number;
+  id?: number,
+  wins?: number,
+  time?: number
 }
 
 export async function selectCar(indexOfCar: number) {
@@ -110,26 +112,89 @@ export function moveCar(svg: HTMLElement, duration: number, indexOfCar: number) 
         } else {
             if (winner.id === 0) {
                 winner.id = indexOfCar;
-                winner.duration = duration;
+                winner.time = duration;
                 showWinner(winner);
+
+                createWinner(
+                  winner
+                )
             }
         }
     };
-    winner.id = 0;
     tick();
+
+    winner.id = 0;
     return test;
 }
 
 function showWinner(winner: IWinner) {
     if (document.querySelector('.popup')) {
         document.querySelector('.popup').classList.remove('hide');
-        document.querySelector('.popup').innerHTML = `Winner is №${winner.id} duration is ${winner.duration}`;
+        document.querySelector('.popup').innerHTML = `Winner is №${winner.id} duration is ${winner.time}`;
     } else {
         popup = new CreateElement(
             'div',
-            `Winner is car №${winner.id} with time: ${winner.duration}s`,
+            `Winner is car №${winner.id} with time: ${winner.time}s`,
             'popup'
         ).getElement();
         document.querySelector('.container').append(popup);
     }
 }
+
+export async function createWinner(body: IWinner) {
+  let countOfWins;
+  let winner:IWinner = await getWinner(body.id);
+  console.log(winner, 'winner in creatwinner');
+
+  if (Object.keys(winner).length !== 0) {
+    console.log('Object.keys(winner)',Object.keys(winner));
+
+    countOfWins = winner.wins;
+    countOfWins++;
+    body.wins = countOfWins;
+    const resp = await fetch(`http://127.0.0.1:3000/winners/${body.id}`, {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+  });
+  resp.json;
+  } else {
+    body.wins = 1;
+    console.log(body, 'body');
+
+
+    const resp = await fetch(`http://127.0.0.1:3000/winners`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+    });
+    resp.json;
+  }
+
+}
+
+export async function getWinner(indexOfCar: number) {
+//   let winner:IWinner;
+  let resp = await fetch(`http://127.0.0.1:3000/winners/${indexOfCar}`);
+  let winner:IWinner = await resp.json();
+  console.log(winner, 'winner');
+
+
+  return winner ? winner : {};
+}
+let pageNumber = 1;
+export async function getWinners() {
+//   const resp = await fetch(`http://127.0.0.1:3000/winners?_page=${pageNumber}&_limit=7`);
+  const resp = await fetch(`http://127.0.0.1:3000/winners`);
+  const winners = await resp.json();
+  console.log({winners});
+
+  return winners;
+}
+
+getWinners()
+getWinner(1)
