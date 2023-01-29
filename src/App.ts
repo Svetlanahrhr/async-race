@@ -4,8 +4,10 @@ import MainPageView from './pages/MainPageView';
 import { selectCar, updateCar, createCar, deleteCar, startEngine, stopEngine, driveCar, moveCar } from './main/actions';
 import generateCars from './main/generateCars';
 let test: number;
-let pageNumber:number = 1;
-let countOfCars:number;
+let pageGarage: number = 1;
+let pageWinners: number = 1;
+let countOfCars: number;
+let countOfWinners: number;
 
 export default class App {
     static containerOfGarage: HTMLElement;
@@ -23,7 +25,8 @@ export default class App {
             App.containerOfGarage.classList.add('hide');
             App.containerOfWinners.classList.remove('hide');
             App.containerOfWinners.innerHTML = '';
-            App.containerOfWinners.append(await new WinnersPage().render());
+            App.containerOfWinners.append(await new WinnersPage().render(pageWinners));
+            countOfWinners = Number(document.querySelector('.counWinners').innerHTML.slice(9).slice(0, -1));
         } else {
             App.containerOfGarage.classList.add('hide');
             App.containerOfWinners.classList.add('hide');
@@ -63,7 +66,7 @@ export default class App {
             if (target.classList.contains('update')) {
                 await updateCar(App.indexOfCar);
                 App.containerOfGarage.innerHTML = '';
-                App.containerOfGarage.append(await new CarsPage().render(pageNumber));
+                App.containerOfGarage.append(await new CarsPage().render(pageGarage));
             }
             if (target.classList.contains('create-btn')) {
                 const nameCar = (document.querySelector('#create') as HTMLInputElement).value;
@@ -82,7 +85,7 @@ export default class App {
                 const indexOfCar = Number((event.target as HTMLElement).classList[0].slice(6));
                 deleteCar(indexOfCar);
                 App.containerOfGarage.innerHTML = '';
-                App.containerOfGarage.append(await new CarsPage().render(pageNumber));
+                App.containerOfGarage.append(await new CarsPage().render(pageGarage));
             }
             if (target.classList.contains('start')) {
                 const indexOfCar = Number(target.classList[0].slice(5));
@@ -128,24 +131,41 @@ export default class App {
                 App.containerOfGarage.innerHTML = '';
 
                 App.containerOfGarage.append(await new CarsPage().render());
-                countOfCars = Number(document.querySelector('.counCars').innerHTML.slice(8).slice(0,-1));
-                console.log(document.querySelector('.counCars').innerHTML.slice(8).slice(0,-1),'countOfCars');
-
+                countOfCars = Number(document.querySelector('.counCars').innerHTML.slice(8).slice(0, -1));
+                console.log(document.querySelector('.counCars').innerHTML.slice(8).slice(0, -1), 'countOfCars');
             }
             if (target.classList.contains('next-btn')) {
-              if(pageNumber === Math.floor(countOfCars / 7)) {
-                return;
-              } else {
-                App.containerOfGarage.innerHTML = '';
-                App.containerOfGarage.append(await new CarsPage().render(++pageNumber));
-              }
+                if (pageGarage === Math.ceil(countOfCars / 7)) {
+                    return;
+                } else {
+                    App.containerOfGarage.innerHTML = '';
+                    App.containerOfGarage.append(await new CarsPage().render(++pageGarage));
+                }
             }
             if (target.classList.contains('prev-btn')) {
-                if(pageNumber === 1) {
-                  return;
+                if (pageGarage === 1) {
+                    return;
                 } else {
-                  App.containerOfGarage.innerHTML = '';
-                  App.containerOfGarage.append(await new CarsPage().render(--pageNumber));
+                    App.containerOfGarage.innerHTML = '';
+                    App.containerOfGarage.append(await new CarsPage().render(--pageGarage));
+                }
+            }
+            if (target.classList.contains('next-winners-btn')) {
+              console.log(pageWinners,'pageWinners',Math.ceil(countOfWinners / 7),'Math.round(countOfWinners / 7)');
+
+                if (pageWinners === Math.ceil(countOfWinners / 7)) {
+                    return;
+                } else {
+                    App.containerOfWinners.innerHTML = '';
+                    App.containerOfWinners.append(await new WinnersPage().render(++pageWinners));
+                }
+            }
+            if (target.classList.contains('prev-winners-btn')) {
+                if (pageWinners === 1) {
+                    return;
+                } else {
+                    App.containerOfWinners.innerHTML = '';
+                    App.containerOfWinners.append(await new WinnersPage().render(--pageWinners));
                 }
             }
         });
