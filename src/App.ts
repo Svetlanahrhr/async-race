@@ -51,6 +51,7 @@ export default class App {
         window.location.hash = 'garage';
         this.routeChange();
         this.eventsListener();
+        countOfCars = Number(document.querySelector('.counCars').innerHTML.slice(8).slice(0, -1));
     }
     private eventsListener() {
         document.body.addEventListener('click', async (event) => {
@@ -129,12 +130,13 @@ export default class App {
             if (target.classList.contains('generate')) {
                 await generateCars();
                 App.containerOfGarage.innerHTML = '';
-
                 App.containerOfGarage.append(await new CarsPage().render());
                 countOfCars = Number(document.querySelector('.counCars').innerHTML.slice(8).slice(0, -1));
                 console.log(document.querySelector('.counCars').innerHTML.slice(8).slice(0, -1), 'countOfCars');
             }
             if (target.classList.contains('next-btn')) {
+              console.log(countOfCars,'countOfCars');
+
                 if (pageGarage === Math.ceil(countOfCars / 7)) {
                     return;
                 } else {
