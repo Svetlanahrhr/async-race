@@ -124,13 +124,14 @@ export function moveCar(svg: HTMLElement, duration: number, indexOfCar: number) 
 }
 
 function showWinner(winner: IWinner) {
+  let nameOfCar = document.querySelector(`.name${winner.id}`).innerHTML;
     if (document.querySelector('.popup')) {
         document.querySelector('.popup').classList.remove('hide');
-        document.querySelector('.popup').innerHTML = `Winner is №${winner.id} duration is ${winner.time}`;
+        document.querySelector('.popup').innerHTML = `Winner is №${nameOfCar} duration is ${winner.time / 1000}`;
     } else {
         popup = new CreateElement(
             'div',
-            `Winner is car №${winner.id} with time: ${winner.time}s`,
+            `Winner is ${nameOfCar} with time: ${winner.time / 1000}s`,
             'popup'
         ).getElement();
         document.querySelector('.container').append(popup);
@@ -141,6 +142,7 @@ export async function createWinner(body: IWinner) {
   let countOfWins;
   let winner:IWinner = await getWinner(body.id);
   console.log(winner, 'winner in creatwinner');
+  body.time = (body.time / 1000);
 
   if (Object.keys(winner).length !== 0) {
     console.log('Object.keys(winner)',Object.keys(winner));

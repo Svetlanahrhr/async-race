@@ -8,9 +8,10 @@ import CreateElement from '../helpers/CreateElement';
 // }
 
 export default class CarsPage {
-  private pageNumber: number = 1;
+  // private pageNumber: number = 1;
 
-  async render(){
+  async render(pageNumber:number = 1){
+    // this.pageNumber = pageNumber;
     const wrapper = new CreateElement('div', '', 'wrapper').getElement();
 
     const inputCreate = new CreateElement('input', '', ['input-color','create']).getElement()
@@ -26,8 +27,11 @@ export default class CarsPage {
     const updateBtn = new CreateElement('button', 'update', ['update','btn','update-btn',]).getElement() as HTMLInputElement;
     updateBtn.disabled = true;
     const br = new CreateElement('br', '', 'br').getElement();
+    const br2 = new CreateElement('br', '', 'br').getElement();
 
     const startRaceBtn = new CreateElement('button', 'Start Race', ['start-race',]).getElement() as HTMLButtonElement;
+    const stopRaceBtn = new CreateElement('button', 'Stop Race', ['stop-race',]).getElement() as HTMLButtonElement;
+    const generateCars = new CreateElement('button', 'Generate Cars', ['generate',]).getElement() as HTMLButtonElement;
 
 
 
@@ -39,19 +43,24 @@ export default class CarsPage {
     wrapper.append(inputColorUpdate)
     wrapper.append(updateBtn)
     wrapper.append(startRaceBtn)
+    wrapper.append(stopRaceBtn)
+    wrapper.append(generateCars)
 
-    const {counCars} = await new Cars(wrapper).getCars(this.pageNumber);
-
-    const h2= new CreateElement('h2', `Garage (${counCars})`, 'title').getElement();
-    const h3 = new CreateElement('h3', `Page number #${this.pageNumber}`, 'title').getElement();
-    wrapper.prepend(h3)
-    wrapper.prepend(h2)
+    const {counCars} = await new Cars(wrapper).getCars(pageNumber);
 
     const prevBtn = new CreateElement('button', 'prev', ['prev-btn','btn-action']).getElement();
     const nextBtn = new CreateElement('button', 'next', ['next-btn', 'btn-action']).getElement();
 
-    wrapper.append(prevBtn)
-    wrapper.append(nextBtn)
+    wrapper.prepend(br2)
+    wrapper.prepend(nextBtn)
+    wrapper.prepend(prevBtn)
+
+    const h2= new CreateElement('h2', `Garage (${counCars})`, 'counCars').getElement();
+    const h3 = new CreateElement('h3', `Page number #${pageNumber}`, 'title').getElement();
+    wrapper.prepend(h3)
+    wrapper.prepend(h2)
+
+
 
     return wrapper;
   }

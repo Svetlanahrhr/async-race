@@ -2,8 +2,10 @@ import CarsPage from './pages/CarsPage';
 import WinnersPage from './pages/WinnersPage';
 import MainPageView from './pages/MainPageView';
 import { selectCar, updateCar, createCar, deleteCar, startEngine, stopEngine, driveCar, moveCar } from './main/actions';
-
+import generateCars from './main/generateCars';
 let test: number;
+let pageNumber:number = 1;
+let countOfCars:number;
 
 export default class App {
     static containerOfGarage: HTMLElement;
@@ -15,8 +17,8 @@ export default class App {
         if (hash === 'garage') {
             App.containerOfGarage.classList.remove('hide');
             App.containerOfWinners.classList.add('hide');
-            App.containerOfGarage.innerHTML = '';
-            App.containerOfGarage.append(await new CarsPage().render());
+            // App.containerOfGarage.innerHTML = '';
+            // App.containerOfGarage.append(await new CarsPage().render());
         } else if (hash === 'winners') {
             App.containerOfGarage.classList.add('hide');
             App.containerOfWinners.classList.remove('hide');
@@ -60,7 +62,8 @@ export default class App {
             }
             if (target.classList.contains('update')) {
                 await updateCar(App.indexOfCar);
-                App.renderNewPage('garage');
+                App.containerOfGarage.innerHTML = '';
+                App.containerOfGarage.append(await new CarsPage().render(pageNumber));
             }
             if (target.classList.contains('create-btn')) {
                 const nameCar = (document.querySelector('#create') as HTMLInputElement).value;
@@ -72,12 +75,14 @@ export default class App {
                     color: chooseColor,
                 });
 
-                App.renderNewPage('garage');
+                App.containerOfGarage.innerHTML = '';
+                App.containerOfGarage.append(await new CarsPage().render());
             }
             if (target.classList.contains('delete')) {
                 const indexOfCar = Number((event.target as HTMLElement).classList[0].slice(6));
                 deleteCar(indexOfCar);
-                App.renderNewPage('garage');
+                App.containerOfGarage.innerHTML = '';
+                App.containerOfGarage.append(await new CarsPage().render(pageNumber));
             }
             if (target.classList.contains('start')) {
                 const indexOfCar = Number(target.classList[0].slice(5));
@@ -109,6 +114,39 @@ export default class App {
                     test = moveCar(svg, duration, indexOfCar);
                     driveCar(indexOfCar);
                 });
+            }
+            if (target.classList.contains('stop-race')) {
+                const cars = document.querySelectorAll('.icon');
+
+                cars.forEach(async (car) => {
+                    let indexOfCar = Number(car.classList[0].slice(4));
+                    stopEngine(indexOfCar);
+                });
+            }
+            if (target.classList.contains('generate')) {
+                await generateCars();
+                App.containerOfGarage.innerHTML = '';
+
+                App.containerOfGarage.append(await new CarsPage().render());
+                countOfCars = Number(document.querySelector('.counCars').innerHTML.slice(8).slice(0,-1));
+                console.log(document.querySelector('.counCars').innerHTML.slice(8).slice(0,-1),'countOfCars');
+
+            }
+            if (target.classList.contains('next-btn')) {
+              if(pageNumber === Math.floor(countOfCars / 7)) {
+                return;
+              } else {
+                App.containerOfGarage.innerHTML = '';
+                App.containerOfGarage.append(await new CarsPage().render(++pageNumber));
+              }
+            }
+            if (target.classList.contains('prev-btn')) {
+                if(pageNumber === 1) {
+                  return;
+                } else {
+                  App.containerOfGarage.innerHTML = '';
+                  App.containerOfGarage.append(await new CarsPage().render(--pageNumber));
+                }
             }
         });
     }
